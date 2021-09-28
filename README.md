@@ -1,16 +1,18 @@
 # LOST 
 Pytorch implementation of the unsupervised object discovery method **LOST**. More details can be found in the paper:
 
-**Localizing Objects with Self-Supervised Transformers and no Labels** [[arXiv](https://arxiv.org/abs/)] \\
-Oriane Siméoni, Gilles Puy, Huy V. Vo, Simon Roburin, Spyros Gidaris, Andrei Bursuc, Patrick Pérez, Renaud Marlet and Jean Ponce
+**Localizing Objects with Self-Supervised Transformers and no Labels** [[arXiv](https://arxiv.org/abs/)]  
+by *Oriane Siméoni, Gilles Puy, Huy V. Vo, Simon Roburin, Spyros Gidaris, Andrei Bursuc, Patrick Pérez, Renaud Marlet and Jean Ponce*
 
 <div>
-  <img width="12%" alt="LOST visualizations" src="examples/LOST_ex0.png">
-  <img width="15%" alt="LOST visualizations" src="examples/LOST_ex1.png">
-</div>
+  <img width="25%" alt="LOST visualizations" src="examples/LOST_ex0.png">
+  <img width="31%" alt="LOST visualizations" src="examples/LOST_ex1.png">
+</div>  
 
+
+\
 If you use the **LOST** code or framework in your research, please consider citing:
-\\
+
 
 ```
 @article{LOST,
@@ -120,8 +122,7 @@ We have tested the method on different setups of the VIT model, corloc results a
   <tr>
 </table>
 
-\\
-
+\
 Previous results on the dataset `VOC07` can be obtained by launching: 
 ```
 python main_lost.py --dataset VOC07 --set trainval #VIT-S/16
