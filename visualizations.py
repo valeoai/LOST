@@ -7,7 +7,7 @@ from PIL import Image
 
 import matplotlib.pyplot as plt
 
-def visualize_predictions(image, pred, seed, scales, dims, vis_folder, im_name):
+def visualize_predictions(image, pred, seed, scales, dims, vis_folder, im_name, plot_seed=False):
     """
     Visualization of the predicted box and the corresponding seed patch.
     """
@@ -18,18 +18,19 @@ def visualize_predictions(image, pred, seed, scales, dims, vis_folder, im_name):
         image,
         (int(pred[0]), int(pred[1])),
         (int(pred[2]), int(pred[3])),
-        (255, 0, 0), 2,
+        (255, 0, 0), 3,
     )
 
     # Plot the seed
-    s_ = np.unravel_index(seed.cpu().numpy(), (w_featmap, h_featmap))
-    size_ = np.asarray(scales) / 2
-    cv2.rectangle(
-        image,
-        (int(s_[1] * scales[1] - (size_[1] / 2)), int(s_[0] * scales[0] - (size_[0] / 2))),
-        (int(s_[1] * scales[1] + (size_[1] / 2)), int(s_[0] * scales[0] + (size_[0] / 2))),
-        (0, 255, 0), -1,
-    )
+    if plot_seed:
+        s_ = np.unravel_index(seed.cpu().numpy(), (w_featmap, h_featmap))
+        size_ = np.asarray(scales) / 2
+        cv2.rectangle(
+            image,
+            (int(s_[1] * scales[1] - (size_[1] / 2)), int(s_[0] * scales[0] - (size_[0] / 2))),
+            (int(s_[1] * scales[1] + (size_[1] / 2)), int(s_[0] * scales[0] + (size_[0] / 2))),
+            (0, 255, 0), -1,
+        )
 
     pltname = f"{vis_folder}/LOST_{im_name}.png"
     Image.fromarray(image).save(pltname)

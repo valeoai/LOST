@@ -7,6 +7,7 @@ by *Oriane Siméoni, Gilles Puy, Huy V. Vo, Simon Roburin, Spyros Gidaris, Andre
 <div>
   <img width="25%" alt="LOST visualizations" src="examples/LOST_ex0.png">
   <img width="31%" alt="LOST visualizations" src="examples/LOST_ex1.png">
+  <img width="27%" alt="LOST visualizations" src="examples/LOST_ex2.png">
 </div>  
 
 
