@@ -18,7 +18,7 @@ If you use the **LOST** code or framework in your research, please consider citi
 @article{LOST,
    title = {Localizing Objects with Self-Supervised Transformers and no Labels},
    author = {Oriane Sim\'eoni and Gilles Puy and Huy V. Vo and Simon Roburin and Spyros Gidaris and Andrei Bursuc and Patrick P\'erez and Renaud Marlet and Jean Ponce},
-   journal = {arXiv preprint arXiv:},
+   journal = {arXiv preprint arXiv:2109.14279},
    month = {09},
    year = {2021}
 }
@@ -54,10 +54,10 @@ python main_lost.py --image_path examples/VOC07_000236.jpg --visualize seed_expa
 ```
 
 ## Launching on datasets
-Following are the command lines to reproduce results presented in the paper. 
+Following are the different steps to reproduce the results of **LOST** presented in the paper. 
 
 ### PASCAL-VOC
-Please download the PASCAL VOC07 and PASCAL VOC12 datasets ([link](http://host.robots.ox.ac.uk/pascal/VOC/)) and put the data in the folder `datasets`. Their should be the two subfolders: `datasets/VOC2007` and `datasets/VOC2012`. In order to apply lost and compute corloc results (VOC07 61.9, VOC12 64.0), please launch:
+Please download the PASCAL VOC07 and PASCAL VOC12 datasets ([link](http://host.robots.ox.ac.uk/pascal/VOC/)) and put the data in the folder `datasets`. There should be the two subfolders: `datasets/VOC2007` and `datasets/VOC2012`. In order to apply lost and compute corloc results (VOC07 61.9, VOC12 64.0), please launch:
 ```
 python main_lost.py --dataset VOC07 --set trainval
 python main_lost.py --dataset VOC12 --set trainval
