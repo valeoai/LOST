@@ -298,6 +298,9 @@ if __name__ == "__main__":
                 image = dataset.load_image(im_name)
                 visualize_predictions(image, pred, seed, scales, [w_featmap, h_featmap], vis_folder, im_name)
 
+        # Save the prediction
+        preds_dict[im_name] = pred
+
         # Evaluation
         if args.no_evaluation:
             continue
