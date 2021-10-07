@@ -132,3 +132,6 @@ python main_lost.py --dataset VOC07 --set trainval --arch vit_base #VIT-B/16
 python main_lost.py --dataset VOC07 --set trainval --arch resnet50 #Resnet50/DINO
 python main_lost.py --dataset VOC07 --set trainval --arch resnet50_imagenet #Resnet50/imagenet
 ```
+
+## License
+LOST is released under the [Apache 2.0 license](./LICENSE).
