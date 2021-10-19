@@ -16,11 +16,11 @@ If you use the **LOST** code or framework in your research, please consider citi
 
 
 ```
-@article{LOST,
+@inproceedings{LOST,
    title = {Localizing Objects with Self-Supervised Transformers and no Labels},
    author = {Oriane Sim\'eoni and Gilles Puy and Huy V. Vo and Simon Roburin and Spyros Gidaris and Andrei Bursuc and Patrick P\'erez and Renaud Marlet and Jean Ponce},
-   journal = {arXiv preprint arXiv:2109.14279},
-   month = {09},
+   journal = {Proceedings of the British Machine Vision Conference (BMVC)},
+   month = {November},
    year = {2021}
 }
 ```
