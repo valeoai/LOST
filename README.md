@@ -54,7 +54,7 @@ python main_lost.py --image_path examples/VOC07_000236.jpg --visualize fms
 python main_lost.py --image_path examples/VOC07_000236.jpg --visualize seed_expansion
 ```
 
-## Launching on datasets
+## Launching LOST on datasets
 Following are the different steps to reproduce the results of **LOST** presented in the paper. 
 
 ### PASCAL-VOC
@@ -132,6 +132,57 @@ python main_lost.py --dataset VOC07 --set trainval --arch vit_base #VIT-B/16
 python main_lost.py --dataset VOC07 --set trainval --arch resnet50 #Resnet50/DINO
 python main_lost.py --dataset VOC07 --set trainval --arch resnet50_imagenet #Resnet50/imagenet
 ```
+
+## Towards unsupervised object detection
+In this work, we additionally use LOST predictions to train object detection models without any human supervision. We explore two scenarios: class-agnostic (CA) and (pseudo) class-aware training of object detectors (OD).
+
+
+### Evaluating LOST+CA (corloc results)
+The predictions of the class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 
+
+```
+python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
+python main_corloc_evaluation.py --dataset VOC12 --set trainval --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
+python main_corloc_evaluation.py --dataset COCO --set train --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
+```
+
+<table>
+  <tr>
+    <th>method</th>
+    <th colspan="3">dataset</th>
+  </tr>
+  <tr>
+    <th></th>
+    <th>VOC07</th>
+    <th>VOC12</th>
+    <th>COCO20k</th>
+  </tr>
+  <tr>
+    <td>LOST</td>
+    <td>61.9</td>
+    <td>64.0</td>
+    <td>50.7</td>
+  <tr>
+  <tr>
+    <td>LOST+CAD</td>
+    <td>65.7</td>
+    <td>70.4</td>
+    <td>57.5</td>
+  <tr>
+</table>
+
+### Training the models
+We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. In order to reproduce our results, please install the framework. 
+
+We use the `R50-C4` model of Detectron2 with ResNet50 pre-trained with DINO self-supervision [model](https://dl.fbaipublicfiles.com/dino/dino_resnet50_pretrain/dino_resnet50_pretrain.pth). 
+
+Details: 
+- mini-batches of size 16 across 8 GPUs using SyncBatchNorm 
+- extra BatchNorm layer for the RoI head after conv5, i.e., `Res5ROIHeadsExtraNorm` layer in Detectron2
+- frozen first two convolutional blocks of ResNet-50, i.e., `conv1` and `conv2` in Detectron2.
+- learning rate is first warmed-up for 100 steps to 0.02 and then reduced by a factor of 10 after 18K and 22K training steps 
+- we use in total 24K training steps for all the experiments, except when training class-agnostic detectors on
+the pseudo-boxes of the VOC07 trainval set, in which case we use 10K steps. 
 
 ## License
 LOST is released under the [Apache 2.0 license](./LICENSE).
