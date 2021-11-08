@@ -19,14 +19,14 @@ from datasets import Dataset, bbox_iou
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Visualize Self-Attention maps")
     parser.add_argument(
-        "--type_predictions",
+        "--type_pred",
         default="boxes_OD",
         choices=["boxes_OD", "detectron"],
         type=str,
         help="Type of predictions will inform on how to load",
     )
     parser.add_argument(
-        "--prediction_file", default="", type=str, help="File location of predictions"
+        "--pred_file", default="", type=str, help="File location of predictions."
     )
     parser.add_argument(
         "--dataset",
@@ -56,11 +56,14 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------------------------------------
     # Load predictions
-    if args.type_predictions == "boxes_OD":
-        with open(args.prediction_file, "rb") as f:
+    if not os.path.exists(args.pred_file):
+        raise ValueError(f"File {args.pred_file} does not exists.")
+
+    if args.type_pred == "boxes_OD":
+        with open(args.pred_file, "rb") as f:
             predictions = pickle.load(f)
-    elif args.type_predictions == "detectron":
-        with open(args.prediction_file, "r") as f:
+    elif args.type_pred == "detectron":
+        with open(args.pred_file, "r") as f:
             predictions = json.load(f)
 
     cnt = 0
@@ -87,9 +90,9 @@ if __name__ == "__main__":
             if gt_bbxs.shape[0] == 0 and args.no_hard:
                 continue
 
-        if args.type_predictions == "boxes_OD":
+        if args.type_pred == "boxes_OD":
             pred = np.asarray(predictions[im_name])
-        elif args.type_predictions == "detectron":
+        elif args.type_pred == "detectron":
             name_ind = im_name
             if "VOC" in args.dataset:
                 name_ind = im_name[:-4]

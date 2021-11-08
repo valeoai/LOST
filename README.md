@@ -141,9 +141,9 @@ In this work, we additionally use LOST predictions to train object detection mod
 The predictions of the class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 
 
 ```
-python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
-python main_corloc_evaluation.py --dataset VOC12 --set trainval --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
-python main_corloc_evaluation.py --dataset COCO --set train --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
+python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
+python main_corloc_evaluation.py --dataset VOC12 --set trainval --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_VOC12.json
+python main_corloc_evaluation.py --dataset COCO20k --set train --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_COCO20k.json
 ```
 
 The following table presents the obtained corloc results.
