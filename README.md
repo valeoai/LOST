@@ -5,9 +5,9 @@ Pytorch implementation of the unsupervised object discovery method **LOST**. Mor
 by *Oriane Siméoni, Gilles Puy, Huy V. Vo, Simon Roburin, Spyros Gidaris, Andrei Bursuc, Patrick Pérez, Renaud Marlet and Jean Ponce*
 
 <div>
-  <img width="25%" alt="LOST visualizations" src="examples/LOST_ex0.png">
-  <img width="31%" alt="LOST visualizations" src="examples/LOST_ex1.png">
-  <img width="27%" alt="LOST visualizations" src="examples/LOST_ex2.png">
+  <img width="25.3%" alt="LOST visualizations" src="examples/LOST_ex0.png">
+  <img width="27.5%" alt="LOST visualizations" src="examples/LOST_ex1.png">
+  <img width="27.5%" alt="LOST visualizations" src="examples/LOST_ex2.png">
 </div>  
 
 
@@ -145,6 +145,8 @@ python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_predictio
 python main_corloc_evaluation.py --dataset VOC12 --set trainval --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
 python main_corloc_evaluation.py --dataset COCO --set train --type_predictions detectron --prediction_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
 ```
+
+The following table presents the obtained corloc results.
 
 <table>
   <tr>
