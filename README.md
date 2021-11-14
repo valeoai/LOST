@@ -1,7 +1,7 @@
 # LOST 
 Pytorch implementation of the unsupervised object discovery method **LOST**. More details can be found in the paper:
 
-**Localizing Objects with Self-Supervised Transformers and no Labels** [[arXiv](https://arxiv.org/abs/2109.14279)]  
+**Localizing Objects with Self-Supervised Transformers and no Labels**, BMVC 2021 [[arXiv](https://arxiv.org/abs/2109.14279)]  
 by *Oriane Siméoni, Gilles Puy, Huy V. Vo, Simon Roburin, Spyros Gidaris, Andrei Bursuc, Patrick Pérez, Renaud Marlet and Jean Ponce*
 
 <div>
