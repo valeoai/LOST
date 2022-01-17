@@ -134,13 +134,48 @@ python main_lost.py --dataset VOC07 --set trainval --arch resnet50_imagenet #Res
 ```
 
 ## Towards unsupervised object detection
-In this work, we additionally use LOST predictions to train object detection models without any human supervision. We explore two scenarios: class-agnostic (CA) and (pseudo) class-aware training of object detectors (OD).
+In this work, we additionally use LOST predictions to train object detection models without any human supervision. We explore two scenarios: class-agnostic (CAD) and (pseudo) class-aware training of object detectors (OD). The next section present the different steps to reproduce our results.
 
-
-### Evaluating LOST+CA (corloc results)
-The predictions of the class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 
-
+### Installation
+We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. In order to reproduce our results, please install the framework using the next commands.
+```bash
+git clone https://github.com/facebookresearch/detectron2.git
+python -m pip install -e detectron2
 ```
+
+Then please copy LOST-specific files to detectron2 framework, following:
+```bash
+cp tools/*.py detectron2/.
+mkdir detectron2/configs/LOST
+cp tools/configs/* detectron2/configs/LOST/.
+```
+
+### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations.
+
+* Before launching a training, data must be formated to fit detectron2 and COCO styles. Following are the command lines to do this formatting for boxes predicted with LOST.
+```bash
+cd detectron2; 
+
+# Format pseudo-boxes data to fit detectron2
+python prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes ../outputs/VOC07_trainval/LOST-vit_small16_k/preds.pkl # for VOC07
+python prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2012 --pboxes ../outputs/VOC12_trainval/LOST-vit_small16_k/preds.pkl # for VOC12
+
+# Format VOC data to fit COCO style
+python prepare_voc_data_in_coco_style.py --is_CAD --voc07_dir ../datasets/VOC2007 --voc12_dir ../datasets/VOC2012
+```
+
+* The next command line allows you to launch a CAD training with 4 gpus on the VOC2007 dataset. The batch size is set to 16, 4 to 8 GPUs may be needed depending on your machines. Please make sure to change the argument value `MODEL.WEIGHTS` to the correct path of DINO weights.
+```bash
+python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD MODEL.WEIGHTS /path/to/DINO/WEIGHTS
+```
+
+Inference results of the model will be stored in `$OUTPUT_DIR/inference`.
+
+### Evaluating LOST+CAD (corloc results)
+
+We have provided predictions of a class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt; they are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 
+
+```bash
 python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_VOC07.json
 python main_corloc_evaluation.py --dataset VOC12 --set trainval --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_VOC12.json
 python main_corloc_evaluation.py --dataset COCO20k --set train --type_pred detectron --pred_file data/CAD_predictions/LOST_plus_CAD_COCO20k.json
@@ -173,8 +208,8 @@ The following table presents the obtained corloc results.
   <tr>
 </table>
 
-### Training the models
-We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. In order to reproduce our results, please install the framework. 
+
+### Details
 
 We use the `R50-C4` model of Detectron2 with ResNet50 pre-trained with DINO self-supervision [model](https://dl.fbaipublicfiles.com/dino/dino_resnet50_pretrain/dino_resnet50_pretrain.pth). 
 
