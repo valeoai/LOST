@@ -170,7 +170,7 @@ ln -s $LOST/tools/configs/* $D2/configs/LOST/. # Move LOST configs to D2
 
 ### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations.
 
-* Before launching a training, data must be formated to fit detectron2 and COCO styles. Following are the command lines to do this formatting for boxes predicted with LOST.
+Before launching a training, data must be formated to fit detectron2 and COCO styles. Following are the command lines to do this formatting for boxes predicted with LOST.
 ```bash
 cd $D2; 
 
@@ -178,14 +178,13 @@ cd $D2;
 python tools/convert_pretrained_to_detectron_format.py --input path/to/dino/weights.pkl --output ./data/dino_RN50_pretrain_d2_format.pkl
 
 # Format pseudo-boxes data to fit detectron2
-python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/outputs/VOC07_trainval/LOST-vit_small16_k/preds.pkl # for VOC07
-python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2012 --pboxes $LOST/outputs/VOC12_trainval/LOST-vit_small16_k/preds.pkl # for VOC12
+python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/data/LOST_predictions/LOST_VOC07.pkl # for VOC07
 
 # Format VOC data to fit COCO style
 python tools/prepare_voc_data_in_coco_style.py --is_CAD --voc07_dir $LOST/datasets/VOC2007 --voc12_dir $LOST/datasets/VOC2012
 ```
 
-* The next command line allows you to launch a CAD training with 4 gpus on the VOC2007 dataset. The batch size is set to 16, 4 to 8 GPUs may be needed depending on your machines. Please make sure to change the argument value `MODEL.WEIGHTS` to the correct path of DINO weights.
+The next command line allows you to launch a CAD training with 4 gpus on the VOC2007 dataset. The batch size is set to 16, 4 to 8 GPUs may be needed depending on your machines. Please make sure to change the argument value `MODEL.WEIGHTS` to the correct path of DINO weights.
 ```bash
 python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
 ```
