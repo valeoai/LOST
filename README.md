@@ -25,6 +25,15 @@ If you use the **LOST** code or framework in your research, please consider citi
 }
 ```
 
+## Content
+- [Installation](installation) 
+- [Apply LOST to one image](apply-lost-to-one-image)
+- [Launching LOST on datasets](launching-lost-on-datasets)
+- [LOST with different models](different-models)
+- [Towards unsupervised object detection](towards-unsupervised-object-detection)
+- [Training LOST+CAD](training-a-class-agnostic-detector-(cad)-with-lost-pseudo-annotations)
+
+
 ## Installation
 ### Dependencies
 
@@ -70,7 +79,7 @@ Please download the [COCO dataset](https://cocodataset.org/#home) and put the da
 python main_lost.py --dataset COCO20k --set train
 ```
 
-## Different models
+### Different models
 We have tested the method on different setups of the VIT model, corloc results are presented in the following table (more can be found in the paper). 
 
 <table>
@@ -143,35 +152,44 @@ git clone https://github.com/facebookresearch/detectron2.git
 python -m pip install -e detectron2
 ```
 
+Set global variables for ease of usage. 
+```bash
+export LOST=$(pwd)
+cd detectron2; export D2=$(pwd);
+```
+
 Then please copy LOST-specific files to detectron2 framework, following:
 ```bash
-cp tools/*.py detectron2/.
-mkdir detectron2/configs/LOST
-cp tools/configs/* detectron2/configs/LOST/.
+ln -s $LOST/tools/*.py $D2/tools/. # Move LOST tools to D2
+mkdir $D2/configs/LOST
+ln -s $LOST/tools/configs/* $D2/configs/LOST/. # Move LOST configs D2
 ```
 
 ### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations.
 
 * Before launching a training, data must be formated to fit detectron2 and COCO styles. Following are the command lines to do this formatting for boxes predicted with LOST.
 ```bash
-cd detectron2; 
+cd $D2; 
+
+# Format DINO weights to fit detectron2
+python tools/convert_pretrained_to_detectron_format.py --input path/to/dino/weights.pkl --output ./data/dino_RN50_pretrain_d2_format.pkl
 
 # Format pseudo-boxes data to fit detectron2
-python prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes ../outputs/VOC07_trainval/LOST-vit_small16_k/preds.pkl # for VOC07
-python prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2012 --pboxes ../outputs/VOC12_trainval/LOST-vit_small16_k/preds.pkl # for VOC12
+python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/outputs/VOC07_trainval/LOST-vit_small16_k/preds.pkl # for VOC07
+python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2012 --pboxes $LOST/outputs/VOC12_trainval/LOST-vit_small16_k/preds.pkl # for VOC12
 
 # Format VOC data to fit COCO style
-python prepare_voc_data_in_coco_style.py --is_CAD --voc07_dir ../datasets/VOC2007 --voc12_dir ../datasets/VOC2012
+python tools/prepare_voc_data_in_coco_style.py --is_CAD --voc07_dir $LOST/datasets/VOC2007 --voc12_dir $LOST/datasets/VOC2012
 ```
 
 * The next command line allows you to launch a CAD training with 4 gpus on the VOC2007 dataset. The batch size is set to 16, 4 to 8 GPUs may be needed depending on your machines. Please make sure to change the argument value `MODEL.WEIGHTS` to the correct path of DINO weights.
 ```bash
-python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD MODEL.WEIGHTS /path/to/DINO/WEIGHTS
+python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
 ```
 
 Inference results of the model will be stored in `$OUTPUT_DIR/inference`.
 
-### Evaluating LOST+CAD (corloc results)
+#### Evaluating LOST+CAD (corloc results)
 
 We have provided predictions of a class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt; they are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 
 
@@ -208,8 +226,33 @@ The following table presents the obtained corloc results.
   <tr>
 </table>
 
+### Training a Class-Aware Detector (OD) with LOST pseudo-annotations
 
-### Details
+Following are the different steps to train a class-aware detector using LOST peusdo-boxes for the dataset VOC07. We provide LOST boxes correspoding to the dataset VOC07 in `$LOST/data/LOST_predictions/LOST_VOC07.pkl`.
+
+```bash
+cd $LOST;
+# Cluster features of LOST boxes
+python cluster_for_OD.py --pred_file $LOST/data/LOST_predictions/LOST_VOC07.pkl --nb_clusters 20 --dataset VOC07 --set trainval
+
+cd $D2;
+# Format DINO weights to fit detectron2
+python tools/convert_pretrained_to_detectron_format.py --input path/to/dino/weights.pkl --output ./data/dino_RN50_pretrain_d2_format.pkl
+
+# Prepare the clustered LOST pseudo-box data for training
+python tools/prepare_voc_LOST_OD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/data/LOST_predictions/LOST_VOC07_clustered_20clu.pkl
+
+# Format VOC data to fit COCO style
+python tools/prepare_voc_data_in_coco_style.py --voc07_dir  $LOST/datasets/VOC2007 --voc12_dir $LOST/datasets/VOC2012
+
+# Train the detector on VOC2007 trainval set.
+python tools/train_net_for_LOST_OD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_OD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_OD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
+
+# Evaluate the detector results using hungarian matching
+python evaluate_unsupervised_detection_voc.py --result ./RN50_DINO_FRCNN_VOC07_OD/inference/coco_instances_results_voc_2007_test.json
+```
+
+### Training details
 
 We use the `R50-C4` model of Detectron2 with ResNet50 pre-trained with DINO self-supervision [model](https://dl.fbaipublicfiles.com/dino/dino_resnet50_pretrain/dino_resnet50_pretrain.pth). 
 

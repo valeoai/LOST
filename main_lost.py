@@ -16,7 +16,7 @@ from visualizations import visualize_fms, visualize_predictions, visualize_seed_
 from object_discovery import lost, detect_box, dino_seg
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Visualize Self-Attention maps")
+    parser = argparse.ArgumentParser("Unsupervised object discovery with LOST.")
     parser.add_argument(
         "--arch",
         default="vit_small",

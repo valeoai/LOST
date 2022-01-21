@@ -66,7 +66,7 @@ if __name__ == '__main__':
     parser.add_argument("--voc12_dir", type=str, default='../datasets/VOC2012',
                         help="Path where the VOC2012 data are.")
     parser.add_argument("--is_CAD", action='store_true', 
-                        help="Are pseuod-boxes class-agnostic?")
+                        help="Are pseudo-boxes class-agnostic?")
     args = parser.parse_args()
 
     year2dir = {"2007": args.voc07_dir, "2012": args.voc12_dir}
