@@ -27,14 +27,14 @@ If you use the **LOST** code or framework in your research, please consider citi
 
 ## Content
 #### LOST
-- [Installation of LOST](installation-of-LOST) 
-- [Apply LOST to one image](apply-lost-to-one-image)
-- [Launching LOST on datasets](launching-lost-on-datasets)
+- [Installation of LOST](#installation-of-lost) 
+- [Apply LOST to one image](#apply-lost-to-one-image)
+- [Launching LOST on datasets](#launching-lost-on-datasets)
 
 #### Towards unsupervised object detection
-- [Installation of LOST+CAD/OD](installation-for-cad-and-od-trainings)
-- [Training LOST+CAD](training-a-class-agnostic-detector-(cad)-with-lost-pseudo-annotations)
-- [Training LOST+OD](training-a-class-aware-detector-(od)-with-lost-pseudo-annotations)
+- [Installation of LOST+CAD/OD](#installation-for-cad-and-od-trainings)
+- [Training LOST+CAD](#training-a-class-agnostic-detector-cad-with-lost-pseudo-annotations)
+- [Training LOST+OD](#training-a-class-aware-detector-od-with-lost-pseudo-annotations)
 
 
 ## Installation of LOST
