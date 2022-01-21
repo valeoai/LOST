@@ -62,8 +62,7 @@ def register_voc_in_coco_style(
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
         voc2007_trainval_dataset_name, voc2007_trainval_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).thing_classes = (
-        detectron2.data.MetadataCatalog.get("voc_2007_trainval").thing_classes)
+    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).thing_classes = ["object",]
     detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).evaluator_type = "coco"
     detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).split = detectron2.data.MetadataCatalog.get("voc_2007_trainval").split
     detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).year = detectron2.data.MetadataCatalog.get("voc_2007_trainval").year
@@ -76,8 +75,7 @@ def register_voc_in_coco_style(
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
         voc2007_test_dataset_name, voc2007_test_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).thing_classes = (
-        detectron2.data.MetadataCatalog.get("voc_2007_test").thing_classes)
+    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).thing_classes = ["object",]
     detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).evaluator_type = "coco"
     detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).split = detectron2.data.MetadataCatalog.get("voc_2007_test").split
     detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).year = detectron2.data.MetadataCatalog.get("voc_2007_test").year
@@ -90,8 +88,7 @@ def register_voc_in_coco_style(
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
         voc2012_trainval_dataset_name, voc2012_trainval_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).thing_classes = (
-        detectron2.data.MetadataCatalog.get("voc_2012_trainval").thing_classes)
+    detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).thing_classes = ["object",]
     detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).evaluator_type = "coco"
     detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).split = detectron2.data.MetadataCatalog.get("voc_2012_trainval").split
     detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).year = detectron2.data.MetadataCatalog.get("voc_2012_trainval").year

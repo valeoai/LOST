@@ -84,7 +84,7 @@ if __name__ == '__main__':
             "name": dataset_name,
             "split": "trainval",
             "year": args.year,
-            "thing_classes": detectron2.data.MetadataCatalog.get(f"voc_{args.year}_trainval").thing_classes,
+            "thing_classes": "object",
         }}
 
     dst_file = f'./datasets/{dataset_name}.json'
