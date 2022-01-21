@@ -26,15 +26,18 @@ If you use the **LOST** code or framework in your research, please consider citi
 ```
 
 ## Content
-- [Installation](installation) 
+#### LOST
+- [Installation of LOST](installation-of-LOST) 
 - [Apply LOST to one image](apply-lost-to-one-image)
 - [Launching LOST on datasets](launching-lost-on-datasets)
-- [LOST with different models](different-models)
-- [Towards unsupervised object detection](towards-unsupervised-object-detection)
+
+#### Towards unsupervised object detection
+- [Installation of LOST+CAD/OD](installation-for-cad-and-od-trainings)
 - [Training LOST+CAD](training-a-class-agnostic-detector-(cad)-with-lost-pseudo-annotations)
+- [Training LOST+OD](training-a-class-aware-detector-(od)-with-lost-pseudo-annotations)
 
 
-## Installation
+## Installation of LOST
 ### Dependencies
 
 This code was implemented with python 3.7, PyTorch 1.7.1 and CUDA 10.2. Please install [PyTorch](https://pytorch.org/). In order to install the additionnal dependencies, please launch the following command:
@@ -145,7 +148,7 @@ python main_lost.py --dataset VOC07 --set trainval --arch resnet50_imagenet #Res
 ## Towards unsupervised object detection
 In this work, we additionally use LOST predictions to train object detection models without any human supervision. We explore two scenarios: class-agnostic (CAD) and (pseudo) class-aware training of object detectors (OD). The next section present the different steps to reproduce our results.
 
-### Installation
+### Installation for CAD and OD trainings
 We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. In order to reproduce our results, please install the framework using the next commands.
 ```bash
 git clone https://github.com/facebookresearch/detectron2.git
@@ -162,7 +165,7 @@ Then please copy LOST-specific files to detectron2 framework, following:
 ```bash
 ln -s $LOST/tools/*.py $D2/tools/. # Move LOST tools to D2
 mkdir $D2/configs/LOST
-ln -s $LOST/tools/configs/* $D2/configs/LOST/. # Move LOST configs D2
+ln -s $LOST/tools/configs/* $D2/configs/LOST/. # Move LOST configs to D2
 ```
 
 ### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations.
