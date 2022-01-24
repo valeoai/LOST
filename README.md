@@ -168,17 +168,18 @@ mkdir $D2/configs/LOST
 ln -s $LOST/tools/configs/* $D2/configs/LOST/. # Move LOST configs to D2
 ```
 
-### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations.
+### Training a Class-Agnostic Detector (CAD) with LOST pseudo-annotations
 
 Before launching a training, data must be formated to fit detectron2 and COCO styles. Following are the command lines to do this formatting for boxes predicted with LOST.
 ```bash
 cd $D2; 
 
 # Format DINO weights to fit detectron2
-python tools/convert_pretrained_to_detectron_format.py --input path/to/dino/weights.pkl --output ./data/dino_RN50_pretrain_d2_format.pkl
+wget https://dl.fbaipublicfiles.com/dino/dino_resnet50_pretrain/dino_resnet50_pretrain.pth -P ./data # Download the model from DINO
+python tools/convert_pretrained_to_detectron_format.py --input ./data/dino_resnet50_pretrain.pth --output ./data/dino_RN50_pretrain_d2_format.pkl
 
 # Format pseudo-boxes data to fit detectron2
-python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/data/LOST_predictions/LOST_VOC07.pkl # for VOC07
+python tools/prepare_voc_LOST_CAD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/data/LOST_predictions/LOST_VOC07.pkl
 
 # Format VOC data to fit COCO style
 python tools/prepare_voc_data_in_coco_style.py --is_CAD --voc07_dir $LOST/datasets/VOC2007 --voc12_dir $LOST/datasets/VOC2012
@@ -239,7 +240,8 @@ python cluster_for_OD.py --pred_file $LOST/data/LOST_predictions/LOST_VOC07.pkl 
 
 cd $D2;
 # Format DINO weights to fit detectron2
-python tools/convert_pretrained_to_detectron_format.py --input path/to/dino/weights.pkl --output ./data/dino_RN50_pretrain_d2_format.pkl
+wget https://dl.fbaipublicfiles.com/dino/dino_resnet50_pretrain/dino_resnet50_pretrain.pth -P ./data # Download the model from DINO
+python tools/convert_pretrained_to_detectron_format.py --input ./data/dino_resnet50_pretrain.pth --output ./data/dino_RN50_pretrain_d2_format.pkl
 
 # Prepare the clustered LOST pseudo-box data for training
 python tools/prepare_voc_LOST_OD_pseudo_boxes_in_detectron2_format.py --year 2007 --pboxes $LOST/data/LOST_predictions/LOST_VOC07_clustered_20clu.pkl
@@ -247,11 +249,12 @@ python tools/prepare_voc_LOST_OD_pseudo_boxes_in_detectron2_format.py --year 200
 # Format VOC data to fit COCO style
 python tools/prepare_voc_data_in_coco_style.py --voc07_dir  $LOST/datasets/VOC2007 --voc12_dir $LOST/datasets/VOC2012
 
-# Train the detector on VOC2007 trainval set.
-python tools/train_net_for_LOST_OD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_OD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_OD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
+# Train the detector on VOC2007 trainval set -- please be aware that no hungarian matching is used during training, so validation restuls are not meaningful (will be close to 0). Please use command bellow in order to evaluate results correctly. 
+python tools/train_net_for_LOST_OD.py --num-gpus 8 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_OD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_OD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
 
-# Evaluate the detector results using hungarian matching
-python evaluate_unsupervised_detection_voc.py --result ./RN50_DINO_FRCNN_VOC07_OD/inference/coco_instances_results_voc_2007_test.json
+# Evaluate the detector results using hungarian matching -- allows to reproduce results from the paper
+cd $LOST;
+python tools/evaluate_unsupervised_detection_voc.py --results ./detectron2/outputs/RN50_DINO_FRCNN_VOC07_OD/inference/coco_instances_results.json
 ```
 
 ### Training details
