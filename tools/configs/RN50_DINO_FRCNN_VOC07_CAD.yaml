@@ -12,6 +12,8 @@ MODEL:
   ROI_HEADS:
     NAME: "Res5ROIHeadsExtraNorm"
     NUM_CLASSES: 1
+    SCORE_THRESH_TEST: 0.01
+    NMS_THRESH_TEST: 0.4
   BACKBONE:
     FREEZE_AT: 2
   ROI_BOX_HEAD:
@@ -31,7 +33,7 @@ TEST:
     ENABLED: True
 SOLVER:
   STEPS: (18000, 22000)
-  MAX_ITER: 24000
+  MAX_ITER: 10000
   WARMUP_ITERS: 100 # Maybe needs tuning.
   IMS_PER_BATCH: 16
   BASE_LR: 0.02 # Maybe it will need some tuning. MoCo used 0.02.

@@ -46,7 +46,7 @@ from detectron2.modeling.roi_heads import ROI_HEADS_REGISTRY, Res5ROIHeads
 import json
 import detectron2.data
 def register_voc_in_coco_style(
-    voc2007_trainval_json_path="./datasets/voc_objects_2007_CAD_trainval_coco_style.json",
+    voc2007_trainval_json_path="./datasets/voc_objects_2007_trainval_CAD_coco_style.json",
     voc2007_test_json_path="./datasets/voc_objects_2007_test_CAD_coco_style.json",
     voc2012_trainval_json_path="./datasets/voc_objects_2012_test_CAD_coco_style.json"):
 
@@ -106,8 +106,7 @@ def register_CAD_LOST_pseudo_boxes_for_the_voc2007_trainval_dataset(
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
         voc2007_dataset_name, voc_2007_trainval_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_dataset_name).thing_classes = (
-        detectron2.data.MetadataCatalog.get(f"voc_2007_trainval").thing_classes)
+    detectron2.data.MetadataCatalog.get(voc2007_dataset_name).thing_classes = ["object",]
     detectron2.data.MetadataCatalog.get(voc2007_dataset_name).evaluator_type = "coco"
 
 register_voc_in_coco_style()

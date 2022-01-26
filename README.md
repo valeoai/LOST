@@ -190,7 +190,10 @@ The next command line allows you to launch a CAD training with 4 gpus on the VOC
 python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
 ```
 
-Inference results of the model will be stored in `$OUTPUT_DIR/inference`.
+Inference results of the model will be stored in `$OUTPUT_DIR/inference`. In order to produce results on the `train+val` dataset, please use the following command:
+```
+python tools/train_net_for_LOST_CAD.py --resume --eval-only --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 6 MODEL.WEIGHTS ./outputs/RN50_DINO_FRCNN_VOC07_CAD/model_final.pth OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD/ DATASETS.TEST '("voc_2007_trainval_CAD_coco_style", )'
+```
 
 #### Evaluating LOST+CAD (corloc results)
 
