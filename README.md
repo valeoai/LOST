@@ -193,6 +193,8 @@ python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST
 Inference results of the model will be stored in `$OUTPUT_DIR/inference`. In order to produce results on the `train+val` dataset, please use the following command:
 ```
 python tools/train_net_for_LOST_CAD.py --resume --eval-only --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_VOC07_CAD.yaml DATALOADER.NUM_WORKERS 6 MODEL.WEIGHTS ./outputs/RN50_DINO_FRCNN_VOC07_CAD/model_final.pth OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_VOC07_CAD/ DATASETS.TEST '("voc_2007_trainval_CAD_coco_style", )'
+cd $LOST;
+python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_pred detectron --pred_file $D2/outputs/RN50_DINO_FRCNN_VOC07_CAD/inference/coco_instances_results.json
 ```
 
 #### Evaluating LOST+CAD (corloc results)
