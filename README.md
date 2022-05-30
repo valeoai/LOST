@@ -197,6 +197,26 @@ cd $LOST;
 python main_corloc_evaluation.py --dataset VOC07 --set trainval --type_pred detectron --pred_file $D2/outputs/RN50_DINO_FRCNN_VOC07_CAD/inference/coco_instances_results.json
 ```
 
+#### Training LOST+CAD on COCO20k dataset
+Following are the command lines allowing to train a detector in a class-agnostic fashion on the COCO20k subset of COCO dataset.
+
+```bash
+cd $D2;
+
+# Format pseudo-boxes data to fit detectron2
+python tools/prepare_coco_LOST_CAD_pseudo_boxes_in_detectron2_format.py --pboxes $LOST/outputs/COCO20k_train/LOST-vit_small16_k/preds.pkl
+
+# Generate COCO20k CAD gt annotations
+python tools/prepare_coco_CAD_gt.py --coco_dir $LOST/datasets/COCO
+
+# Train detector (evaluation done on COCO20k CAD training set)
+python tools/train_net_for_LOST_CAD.py --num-gpus 4 --config-file ./configs/LOST/RN50_DINO_FRCNN_COCO20k_CAD.yaml DATALOADER.NUM_WORKERS 8 OUTPUT_DIR ./outputs/RN50_DINO_FRCNN_COCO20k_CAD MODEL.WEIGHTS ./data/dino_RN50_pretrain_d2_format.pkl
+
+# Corloc evaluation
+python main_corloc_evaluation.py --dataset COCO20k --type_pred detectron --pred_file $D2/outputs/RN50_DINO_FRCNN_COCO20k_CAD/inference/coco_instances_results.json
+```
+
+
 #### Evaluating LOST+CAD (corloc results)
 
 We have provided predictions of a class-agnostic Faster R-CNN model trained using LOST boxes as pseudo-gt; they are stored in the folder `data/CAD_predictions`. In order to launch the corloc evaluation, please launch the following scripts. It is to be noted that in this evaluation, only the box with the highest confidence score is considered per image. 

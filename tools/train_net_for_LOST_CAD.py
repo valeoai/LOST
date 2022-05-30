@@ -5,6 +5,7 @@
 
 import logging
 import os
+import copy
 from collections import OrderedDict
 import torch
 
@@ -96,8 +97,91 @@ def register_CAD_LOST_pseudo_boxes_for_the_voc2007_trainval_dataset(
     detectron2.data.MetadataCatalog.get(voc2007_dataset_name).thing_classes = ["object",]
     detectron2.data.MetadataCatalog.get(voc2007_dataset_name).evaluator_type = "coco"
 
+def register_CAD_objects_coco_train_dataset(image_root=None):
+    print(f"Registering the 'coco_train_CAD' for class agnostic object detection.")
+    def coco_train_ca_dataset_function():
+        coco_data_gt = detectron2.data.DatasetCatalog.get("coco_2014_train")
+        coco_data_gt = copy.deepcopy(coco_data_gt)
+        # Make the ground bounding boxes class agnostic (i.e., give to all of
+        # them the category id 0).
+        for i in range(len(coco_data_gt)):
+            if image_root is not None:
+                coco_data_gt[i]["file_name"] = \
+                    coco_data_gt[i]["file_name"].replace('datasets/coco', image_root)
+            for j in range(len(coco_data_gt[i]["annotations"])):
+                coco_data_gt[i]["annotations"][j]["category_id"] = 0
+        return coco_data_gt
+    detectron2.data.DatasetCatalog.register(
+        "coco_train_CAD", coco_train_ca_dataset_function)
+    detectron2.data.MetadataCatalog.get("coco_train_CAD").thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get("coco_train_CAD").evaluator_type = "coco"
+    detectron2.data.MetadataCatalog.get("coco_train_CAD").name = "coco_train_CAD"
+
+def register_CAD_objects_coco_val_dataset(image_root=None):
+    print(f"Registering the 'coco_val_CAD' for class agnostic object detection.")
+    def coco_val_ca_dataset_function():
+        coco_data_gt = detectron2.data.DatasetCatalog.get("coco_2014_val")
+        coco_data_gt = copy.deepcopy(coco_data_gt)
+        # Make the ground bounding boxes class agnostic (i.e., give to all of
+        # them the category id 0).
+        for i in range(len(coco_data_gt)):
+            if image_root is not None:
+                coco_data_gt[i]["file_name"] = \
+                    coco_data_gt[i]["file_name"].replace('datasets/coco', image_root)
+            for j in range(len(coco_data_gt[i]["annotations"])):
+                coco_data_gt[i]["annotations"][j]["category_id"] = 0
+        return coco_data_gt
+    detectron2.data.DatasetCatalog.register(
+        "coco_val_CAD", coco_val_ca_dataset_function)
+    detectron2.data.MetadataCatalog.get("coco_val_CAD").thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get("coco_val_CAD").evaluator_type = "coco"
+    detectron2.data.MetadataCatalog.get("coco_val_CAD").name = "coco_val_CAD"
+
+def register_CAD_coco20k_train_gt_dataset(
+    coco_json_path="./datasets/coco20k_trainval_CAD_gt.json",
+    coco_dataset_name="coco20k_train_CAD_gt"):
+
+    print(f"Registering the '{coco_dataset_name}' from the json file {coco_json_path}")
+    def coco_train_dataset_function():
+        with open(coco_json_path) as infile:
+            json_data = json.load(infile)
+        return json_data["dataset"]
+    detectron2.data.DatasetCatalog.register(
+        coco_dataset_name, coco_train_dataset_function)
+    detectron2.data.MetadataCatalog.get(coco_dataset_name).thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get(coco_dataset_name).evaluator_type = "coco"
+
+def register_CAD_LOST_pseudo_boxes_for_the_coco20k_trainval_dataset(
+    coco20k_json_path="./datasets/coco20k_train_LOST_CAD.json",
+    coco20k_dataset_name="coco20k_train_LOST_CAD"):
+
+    print(f"Registering the '{coco20k_dataset_name}' from the json file {coco20k_json_path}")
+    def coco20k_train_dataset_function():
+        with open(coco20k_json_path) as infile:
+            json_data = json.load(infile)
+        return json_data["dataset"]
+    detectron2.data.DatasetCatalog.register(
+        coco20k_dataset_name, coco20k_train_dataset_function)
+    detectron2.data.MetadataCatalog.get(coco20k_dataset_name).thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get(coco20k_dataset_name).evaluator_type = "coco"
+
+
+#*******************************************************************************
+#*******************************************************************************
+# Comment out those not needed.
+# Register VOC datasets
 register_voc_in_coco_style()
 register_CAD_LOST_pseudo_boxes_for_the_voc2007_trainval_dataset()
+
+# Register COCO dataset
+register_CAD_coco20k_train_gt_dataset()
+register_CAD_objects_coco_train_dataset(image_root='../datasets/COCO/images')
+register_CAD_objects_coco_val_dataset(image_root='../datasets/COCO/images')
+try:
+    register_CAD_LOST_pseudo_boxes_for_the_coco20k_trainval_dataset()
+except:
+    print("If failing here, please make sure to construct pseudo-boxes dataset using:\
+          >python tools/prepare_coco_LOST_CAD_pseudo_boxes_in_detectron2_format.py --pboxes /path/preds.pkl")
 #*******************************************************************************
 #*******************************************************************************
 
