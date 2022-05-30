@@ -1,3 +1,17 @@
+# Copyright 2021 - Valeo Comfort and Driving Assistance - Oriane Siméoni @ valeo.ai
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import torch
 import scipy
 import scipy.ndimage
@@ -109,6 +123,7 @@ def detect_box(A, seed, dims, initial_im_size=None, scales=None):
 def dino_seg(attn, dims, patch_size, head=0):
     """
     Extraction of boxes based on the DINO segmentation method proposed in https://github.com/facebookresearch/dino. 
+    Modified from https://github.com/facebookresearch/dino/blob/main/visualize_attention.py
     """
     w_featmap, h_featmap = dims
     nh = attn.shape[1]
