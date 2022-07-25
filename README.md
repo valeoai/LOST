@@ -149,10 +149,10 @@ python main_lost.py --dataset VOC07 --set trainval --arch resnet50_imagenet #Res
 In this work, we additionally use LOST predictions to train object detection models without any human supervision. We explore two scenarios: class-agnostic (CAD) and (pseudo) class-aware training of object detectors (OD). The next section present the different steps to reproduce our results.
 
 ### Installation for CAD and OD trainings
-We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. In order to reproduce our results, please install the framework using the next commands.
+We use the [detectron2](https://github.com/facebookresearch/detectron2) framework to train a Faster R-CNN model with LOST predictions as pseudo-gt. The code was developped with the version [v0.5](https://github.com/facebookresearch/detectron2/releases) of the framework. In order to reproduce our results, please install detectron2 using the next commands. In case of failure, you can find the installation corresponding to your version of pytorch/CUDA [here](https://github.com/facebookresearch/detectron2/releases).
 ```bash
 git clone https://github.com/facebookresearch/detectron2.git
-python -m pip install -e detectron2
+python -m pip install detectron2==0.5
 ```
 
 Set global variables for ease of usage. 
