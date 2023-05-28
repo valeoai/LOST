@@ -12,8 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# import the Operating System (OS) module, provides a way to interact with the operating system,
+# such as creating, reading, and deleting files and directories.
 import os
+
+# import the argparse module, which provides a way to parse command line arguments in Python programs.
 import argparse
+
+# import the random module, which provides a way to generate
+# random numbers, select random items from lists, and shuffle sequences randomly.
 import random
 import pickle
 
@@ -21,7 +28,11 @@ import torch
 import torch.nn as nn
 import numpy as np
 
+# imports tqdm module, provides a way to create progress bars for long-running loops and tasks.
 from tqdm import tqdm
+
+#  import the Image module from the Python Imaging Library (PIL),
+#  provides a way to work with images in Python.
 from PIL import Image
 
 from networks import get_model
@@ -52,9 +63,9 @@ if __name__ == "__main__":
     # Use a dataset
     parser.add_argument(
         "--dataset",
-        default="VOC07",
+        default="WiderPerson",
         type=str,
-        choices=[None, "VOC07", "VOC12", "COCO20k"],
+        choices=[None, "WiderPerson", "VOC12", "COCO20k"],
         help="Dataset name.",
     )
     parser.add_argument(

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#
 import os
 import torch
 import json
@@ -61,8 +62,8 @@ class Dataset:
         self.dataset_name = dataset_name
         self.set = dataset_set
 
-        if dataset_name == "VOC07":
-            self.root_path = "datasets/VOC2007"
+        if dataset_name == "WiderPerson":
+            self.root_path = "datasets/WiderPerson"
             self.year = "2007"
         elif dataset_name == "VOC12":
             self.root_path = "datasets/VOC2012"
@@ -85,8 +86,8 @@ class Dataset:
         self.name = f"{self.dataset_name}_{self.set}"
 
         # Build the dataloader
-        if "VOC" in dataset_name:
-            self.dataloader = torchvision.datasets.VOCDetection(
+        if "WiderPerson" in dataset_name:
+            self.dataloader = torchvision.datasets.WiderPersonDetection(
                 self.root_path,
                 year=self.year,
                 image_set=self.set,
@@ -112,8 +113,8 @@ class Dataset:
         """
         Load the image corresponding to the im_name
         """
-        if "VOC" in self.dataset_name:
-            image = skimage.io.imread(f"/datasets_local/VOC{self.year}/JPEGImages/{im_name}")
+        if "WiderPerson" in self.dataset_name:
+            image = skimage.io.imread(f"/datasets_local/WiderPerson{self.year}/JPEGImages/{im_name}")
         elif "COCO" in self.dataset_name:
             im_path = self.path_20k[self.sel_20k.index(im_name)]
             image = skimage.io.imread(f"/datasets_local/COCO/images/{im_path}")
@@ -125,7 +126,7 @@ class Dataset:
         """
         Return the image name
         """
-        if "VOC" in self.dataset_name:
+        if "WiderPerson" in self.dataset_name:
             im_name = inp["annotation"]["filename"]
         elif "COCO" in self.dataset_name:
             im_name = str(inp[0]["image_id"])
@@ -133,15 +134,15 @@ class Dataset:
         return im_name
 
     def extract_gt(self, targets, im_name):
-        if "VOC" in self.dataset_name:
-            return extract_gt_VOC(targets, remove_hards=self.remove_hards)
+        if "WiderPerson" in self.dataset_name:
+            return extract_gt_WiderPerson(targets, remove_hards=self.remove_hards)
         elif "COCO" in self.dataset_name:
             return extract_gt_COCO(targets, remove_iscrowd=True)
         else:
             raise ValueError("Unknown dataset")
 
     def extract_classes(self):
-        if "VOC" in self.dataset_name:
+        if "WiderPerson" in self.dataset_name:
             cls_path = f"classes_{self.set}_{self.year}.txt"
         elif "COCO" in self.dataset_name:
             cls_path = f"classes_{self.dataset}_{self.set}_{self.year}.txt"
@@ -154,8 +155,8 @@ class Dataset:
                     all_classes.append(line.strip())
         else:
             print("Extract all classes from the dataset")
-            if "VOC" in self.dataset_name:
-                all_classes = self.extract_classes_VOC()
+            if "WiderPerson" in self.dataset_name:
+                all_classes = self.extract_classes_WiderPerson()
             elif "COCO" in self.dataset_name:
                 all_classes = self.extract_classes_COCO()
 
@@ -165,7 +166,7 @@ class Dataset:
 
         return all_classes
 
-    def extract_classes_VOC(self):
+    def extract_classes_WiderPerson(self):
         all_classes = []
         for im_id, inp in enumerate(tqdm(self.dataloader)):
             objects = inp[1]["annotation"]["object"]
@@ -197,9 +198,9 @@ class Dataset:
         else:
             print("Discover hard images that should be discarded")
 
-            if "VOC" in self.dataset_name:
+            if "WiderPerson" in self.dataset_name:
                 # set the hards
-                hards = discard_hard_voc(self.dataloader)
+                hards = discard_hard_wider_person(self.dataloader)
 
             with open(hard_path, "w") as f:
                 for s in hards:
@@ -208,7 +209,7 @@ class Dataset:
         return hards
 
 
-def discard_hard_voc(dataloader):
+def discard_hard_wider_person(dataloader):
     hards = []
     for im_id, inp in enumerate(tqdm(dataloader)):
         objects = inp[1]["annotation"]["object"]
@@ -248,7 +249,7 @@ def extract_gt_COCO(targets, remove_iscrowd=True):
     return np.asarray(gt_bbxs), gt_clss
 
 
-def extract_gt_VOC(targets, remove_hards=False):
+def extract_gt_WiderPerson(targets, remove_hards=False):
     objects = targets["annotation"]["object"]
     nb_obj = len(objects)
 
