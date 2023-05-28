@@ -21,7 +21,7 @@ from detectron2.evaluation import (
     COCOPanopticEvaluator,
     DatasetEvaluators,
     LVISEvaluator,
-    PascalVOCDetectionEvaluator,
+    WiderPersonDetectionEvaluator,
     SemSegEvaluator,
     verify_results,
 )
@@ -33,41 +33,41 @@ from detectron2.modeling.roi_heads import ROI_HEADS_REGISTRY, Res5ROIHeads
 #********************** REGISTERING THE NECESSARY DATASETS *********************
 import json
 import detectron2.data
-def register_voc_in_coco_style(
-    voc2007_trainval_json_path="./datasets/voc_objects_2007_trainval_CAD_coco_style.json",
-    voc2007_test_json_path="./datasets/voc_objects_2007_test_CAD_coco_style.json",
+def register_wider_person_in_coco_style(
+    wider_person_trainval_json_path="./datasets/wider_person_objects_trainval_CAD_coco_style.json",
+    wider_person_test_json_path="./datasets/wider_person_objects_test_CAD_coco_style.json",
     voc2012_trainval_json_path="./datasets/voc_objects_2012_test_CAD_coco_style.json"):
 
     dataset_suffix = "coco_style"
-    voc2007_trainval_dataset_name = f"voc_2007_trainval_CAD_{dataset_suffix}"
-    voc2007_test_dataset_name = f"voc_2007_test_CAD_{dataset_suffix}"
-    voc2012_trainval_dataset_name = f"voc_2012_trainval_CAD_{dataset_suffix}"
+    wider_person_trainval_dataset_name = f"wider_person_trainval_CAD_{dataset_suffix}"
+    wider_person_test_dataset_name = f"wider_person_test_CAD_{dataset_suffix}"
+    voc2012_trainval_dataset_name = f"wider_person_trainval_CAD_{dataset_suffix}"
 
-    print(f"Registering the '{voc2007_trainval_dataset_name}' from the json file {voc2007_trainval_json_path}")
-    def voc2007_trainval_dataset_function():
-        with open(voc2007_trainval_json_path) as infile:
+    print(f"Registering the '{wider_person_trainval_dataset_name}' from the json file {wider_person_trainval_json_path}")
+    def wider_person_trainval_dataset_function():
+        with open(wider_person_trainval_json_path) as infile:
             json_data = json.load(infile)
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
-        voc2007_trainval_dataset_name, voc2007_trainval_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).thing_classes = ["object",]
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).evaluator_type = "coco"
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).split = detectron2.data.MetadataCatalog.get("voc_2007_trainval").split
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).year = detectron2.data.MetadataCatalog.get("voc_2007_trainval").year
-    detectron2.data.MetadataCatalog.get(voc2007_trainval_dataset_name).name = voc2007_trainval_dataset_name
+        wider_person_trainval_dataset_name, wider_person_trainval_dataset_function)
+    detectron2.data.MetadataCatalog.get(wider_person_trainval_dataset_name).thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get(wider_person_trainval_dataset_name).evaluator_type = "coco"
+    detectron2.data.MetadataCatalog.get(wider_person_trainval_dataset_name).split = detectron2.data.MetadataCatalog.get("wider_person_trainval").split
+    detectron2.data.MetadataCatalog.get(wider_person_trainval_dataset_name).year = detectron2.data.MetadataCatalog.get("wider_person_trainval").year
+    detectron2.data.MetadataCatalog.get(wider_person_trainval_dataset_name).name = wider_person_trainval_dataset_name
 
-    print(f"Registering the '{voc2007_test_dataset_name}' from the json file {voc2007_test_json_path}")
-    def voc2007_test_dataset_function():
-        with open(voc2007_test_json_path) as infile:
+    print(f"Registering the '{wider_person_test_dataset_name}' from the json file {wider_person_test_json_path}")
+    def wider_person_test_dataset_function():
+        with open(wider_person_test_json_path) as infile:
             json_data = json.load(infile)
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
-        voc2007_test_dataset_name, voc2007_test_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).thing_classes = ["object",]
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).evaluator_type = "coco"
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).split = detectron2.data.MetadataCatalog.get("voc_2007_test").split
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).year = detectron2.data.MetadataCatalog.get("voc_2007_test").year
-    detectron2.data.MetadataCatalog.get(voc2007_test_dataset_name).name = voc2007_test_dataset_name
+        wider_person_test_dataset_name, wider_person_test_dataset_function)
+    detectron2.data.MetadataCatalog.get(wider_person_test_dataset_name).thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get(wider_person_test_dataset_name).evaluator_type = "coco"
+    detectron2.data.MetadataCatalog.get(wider_person_test_dataset_name).split = detectron2.data.MetadataCatalog.get("wider_person_test").split
+    detectron2.data.MetadataCatalog.get(wider_person_test_dataset_name).year = detectron2.data.MetadataCatalog.get("wider_person_test").year
+    detectron2.data.MetadataCatalog.get(wider_person_test_dataset_name).name = wider_person_test_dataset_name
 
     print(f"Registering the '{voc2012_trainval_dataset_name}' from the json file {voc2012_trainval_json_path}")
     def voc2012_trainval_dataset_function():
@@ -83,19 +83,19 @@ def register_voc_in_coco_style(
     detectron2.data.MetadataCatalog.get(voc2012_trainval_dataset_name).name = voc2012_trainval_dataset_name
 
 
-def register_CAD_LOST_pseudo_boxes_for_the_voc2007_trainval_dataset(
-    voc2007_json_path="./datasets/voc_2007_trainval_LOST_CAD.json",
-    voc2007_dataset_name="voc_2007_trainval_LOST_CAD"):
+def register_CAD_LOST_pseudo_boxes_for_the_wider_person_trainval_dataset(
+    wider_person_json_path="./datasets/wider_person_trainval_LOST_CAD.json",
+    wider_person_dataset_name="wider_person_trainval_LOST_CAD"):
 
-    print(f"Registering the '{voc2007_dataset_name}' from the json file {voc2007_json_path}")
-    def voc_2007_trainval_dataset_function():
-        with open(voc2007_json_path) as infile:
+    print(f"Registering the '{wider_person_dataset_name}' from the json file {wider_person_json_path}")
+    def wider_person_trainval_dataset_function():
+        with open(wider_person_json_path) as infile:
             json_data = json.load(infile)
         return json_data["dataset"]
     detectron2.data.DatasetCatalog.register(
-        voc2007_dataset_name, voc_2007_trainval_dataset_function)
-    detectron2.data.MetadataCatalog.get(voc2007_dataset_name).thing_classes = ["object",]
-    detectron2.data.MetadataCatalog.get(voc2007_dataset_name).evaluator_type = "coco"
+        wider_person_dataset_name, wider_person_trainval_dataset_function)
+    detectron2.data.MetadataCatalog.get(wider_person_dataset_name).thing_classes = ["object",]
+    detectron2.data.MetadataCatalog.get(wider_person_dataset_name).evaluator_type = "coco"
 
 def register_CAD_objects_coco_train_dataset(image_root=None):
     print(f"Registering the 'coco_train_CAD' for class agnostic object detection.")
@@ -169,9 +169,9 @@ def register_CAD_LOST_pseudo_boxes_for_the_coco20k_trainval_dataset(
 #*******************************************************************************
 #*******************************************************************************
 # Comment out those not needed.
-# Register VOC datasets
-register_voc_in_coco_style()
-register_CAD_LOST_pseudo_boxes_for_the_voc2007_trainval_dataset()
+# Register WiderPerson datasets
+register_wider_person_in_coco_style()
+register_CAD_LOST_pseudo_boxes_for_the_wider_person_trainval_dataset()
 
 # Register COCO dataset
 register_CAD_coco20k_train_gt_dataset()
@@ -241,8 +241,8 @@ class Trainer(DefaultTrainer):
                 torch.cuda.device_count() >= comm.get_rank()
             ), "CityscapesEvaluator currently do not work with multiple machines."
             return CityscapesSemSegEvaluator(dataset_name)
-        elif evaluator_type == "pascal_voc":
-            return PascalVOCDetectionEvaluator(dataset_name)
+        elif evaluator_type == "wider_person":
+            return PascalWiderPersonDetectionEvaluator(dataset_name)
         elif evaluator_type == "lvis":
             return LVISEvaluator(dataset_name, output_dir=output_folder)
         if len(evaluator_list) == 0:

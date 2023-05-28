@@ -21,7 +21,7 @@ from detectron2.structures import Boxes, BoxMode
 
 @lru_cache(maxsize=None)
 def parse_rec(filename):
-    """Parse a PASCAL VOC xml file."""
+    """Parse a WiderPerson xml file."""
     with PathManager.open(filename) as f:
         tree = ET.parse(f)
     objects = []
@@ -43,7 +43,7 @@ def parse_rec(filename):
     return objects
 
 
-def voc_ap(rec, prec, use_07_metric=False):
+def wider_person_ap(rec, prec, use_07_metric=False):
     """Compute VOC AP given precision and recall. If use_07_metric is true, uses
     the VOC 07 11-point method (default:False).
     """
@@ -75,7 +75,7 @@ def voc_ap(rec, prec, use_07_metric=False):
     return ap
 
 
-def voc_eval(detpath, annopath, imagesetfile, classname, ovthresh=0.5, use_07_metric=False):
+def wider_person_eval(detpath, annopath, imagesetfile, classname, ovthresh=0.5, use_07_metric=False):
     """rec, prec, ap = voc_eval(detpath,
                                 annopath,
                                 imagesetfile,
@@ -191,7 +191,7 @@ def voc_eval(detpath, annopath, imagesetfile, classname, ovthresh=0.5, use_07_me
     # avoid divide by zero in case the first detection matches a difficult
     # ground truth
     prec = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
-    ap = voc_ap(rec, prec, use_07_metric)
+    ap = wider_person_ap(rec, prec, use_07_metric)
 
     return rec, prec, ap
 
@@ -267,8 +267,8 @@ def sort_detections(detections):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='voc_2007_test')
-    parser.add_argument('--results', type=str, default='./Pascal_Dino_ResNet50_faster_c4_voc07_based_on_lost_pseudo_boxes_clustered_with_k20/inference/coco_instances_results_voc_2007_test.json')
+    parser.add_argument('--dataset', type=str, default='wider_person_test')
+    parser.add_argument('--results', type=str, default='./Pascal_Dino_ResNet50_faster_c4_wider_person_based_on_lost_pseudo_boxes_clustered_with_k20/inference/coco_instances_results_wider_person_test.json')
     args = parser.parse_args()
 
     meta = MetadataCatalog.get(args.dataset)
@@ -288,12 +288,12 @@ if __name__ == '__main__':
     num_classes = len(args._class_names)
     num_clusters = len(detections)
     reward_matrix = np.zeros([num_classes, num_clusters])
-    with tempfile.TemporaryDirectory(prefix="pascal_voc_eval_") as dirname:
+    with tempfile.TemporaryDirectory(prefix="wider_person_eval_") as dirname:
         for cls_id, cls_name in enumerate(args._class_names):
             for cluster_id in range(num_clusters):
                 # Compute the AP for the class "cls_id" when using the
                 # detections of the "cluster_id" cluster.
-                _, _, reward_matrix[cls_id, cluster_id] = voc_eval(
+                _, _, reward_matrix[cls_id, cluster_id] = wider_person_eval(
                     detections[cluster_id], #res_file_template,
                     args._anno_file_template,
                     args._image_set_path,
@@ -305,13 +305,13 @@ if __name__ == '__main__':
 
     # Evaluate the detailed average precision results based on the cluster to
     # class mapping computed with hungarian_matching.
-    with tempfile.TemporaryDirectory(prefix="pascal_voc_eval_") as dirname:
+    with tempfile.TemporaryDirectory(prefix="wider_person_eval_") as dirname:
         res_file_template = os.path.join(dirname, "{}.txt")
 
         aps = defaultdict(list)  # iou -> ap per class
         for cls_id, cls_name in enumerate(args._class_names):
             for thresh in range(50, 100, 5):
-                rec, prec, ap = voc_eval(
+                rec, prec, ap = wider_person_eval(
                     detections[cls_to_cluster[cls_id]], #res_file_template,
                     args._anno_file_template,
                     args._image_set_path,

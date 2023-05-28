@@ -56,17 +56,17 @@ def prepare_annotation_data(loc_object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="Prepares the LOST pseudo-boxes from a VOC"
+        description="Prepares the LOST pseudo-boxes from a WiderPerson"
                     "dataset in the data format expected from detectron2.")
-    parser.add_argument("--voc_dir", type=str, default='../datasets/VOC',
-                        help="Path to where the VOC dataset is.")
-    parser.add_argument("--year", type=str, default='2007', help="Year of VOC dataset.")
-    parser.add_argument("--pboxes", type=str, default='../outputs/VOC07_trainval/LOST-vit_small16_k/preds.pkl',
-                        help="Path to where the LOST CA pseudo boxes for the VOCyear trainval data are.")
+    parser.add_argument("--wider_person_dir", type=str, default='../datasets/WiderPerson',
+                        help="Path to where the WiderPerson dataset is.")
+    parser.add_argument("--year", type=str, default='2007', help="Year of WiderPerson dataset.")
+    parser.add_argument("--pboxes", type=str, default='../outputs/wider_person_trainval/LOST-vit_small16_k/preds.pkl',
+                        help="Path to where the LOST CA pseudo boxes for the WiderPersonyear trainval data are.")
     args = parser.parse_args()
 
     # Dataset directory
-    voc_dir = f"{args.voc_dir}{args.year}"
+    wider_person_dir = f"{args.wider_person_dir}{args.year}"
 
     # Load the boxes
     with open(args.pboxes, 'rb') as handle:
@@ -77,8 +77,8 @@ if __name__ == '__main__':
     for image_name in LOST_pseudo_boxes:
         image_id = image_name[:-len('.jpg')]
         image_id_int = int(image_id)
-        full_img_path = pathlib.Path(voc_dir) / "JPEGImages" / image_name
-        full_ann_path = pathlib.Path(voc_dir) / "Annotations" / f"{image_id}.xml"
+        full_img_path = pathlib.Path(wider_person_dir) / "JPEGImages" / image_name
+        full_ann_path = pathlib.Path(wider_person_dir) / "Annotations" / f"{image_id}.xml"
         width, height = get_img_size(full_ann_path)
         assert full_img_path.is_file()
         data.append({
@@ -89,12 +89,12 @@ if __name__ == '__main__':
         })
         cnt += 1
     print(f'Number images saved {cnt}')
-    dataset_name = f"voc_{args.year}_trainval_LOST_CAD"
+    dataset_name = f"wider_person_{args.year}_trainval_LOST_CAD"
     json_data = {
         "dataset": data,
         "meta_data": {
-            "dirname": voc_dir,
-            "evaluator_type": "pascal_voc",
+            "dirname": wider_person_dir,
+            "evaluator_type": "wider_person",
             "name": dataset_name,
             "split": "trainval",
             "year": args.year,

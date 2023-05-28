@@ -53,9 +53,9 @@ if __name__ == '__main__':
         description="Prepares the LOST pseudo-boxes from a COCO2014"
                     "dataset in the data format expected from detectron2.")
     parser.add_argument("--coco_dir", type=str, default='../datasets/COCO',
-                        help="Path to where the VOC dataset is.")
+                        help="Path to where the WiderPerson dataset is.")
     parser.add_argument("--pboxes", type=str, default='../outputs/COCO20k_train/LOST-vit_small16_k/preds.pkl',
-                        help="Path to where the LOST CA pseudo boxes for the VOCyear trainval data are.")
+                        help="Path to where the LOST CA pseudo boxes for the WiderPersonyear trainval data are.")
     args = parser.parse_args()
 
     print('Prepare LOST pseudo-boxes (COCO2014) in the data format expected from detectron2.')
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         "dataset": data,
         "meta_data": {
             "dirname": args.coco_dir,
-            "evaluator_type": "pascal_voc",
+            "evaluator_type": "wider_person",
             "name": dataset_name,
             "split": "train",
             "year": 2014,

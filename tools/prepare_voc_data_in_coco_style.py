@@ -75,15 +75,15 @@ def prepare_annotation_data(ann_file, class_agnostic=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--voc07_dir", type=str, default='../datasets/VOC2007',
-                        help="Path where the VOC2007 data are.")
+    parser.add_argument("--wider_person_dir", type=str, default='../datasets/WiderPerson',
+                        help="Path where the WiderPerson data are.")
     parser.add_argument("--voc12_dir", type=str, default='../datasets/VOC2012',
                         help="Path where the VOC2012 data are.")
     parser.add_argument("--is_CAD", action='store_true', 
                         help="Are pseudo-boxes class-agnostic?")
     args = parser.parse_args()
 
-    year2dir = {"2007": args.voc07_dir, "2012": args.voc12_dir}
+    year2dir = {"2007": args.wider_person_dir, "2012": args.voc12_dir}
     sets = [('2012', 'trainval'), ('2007', 'trainval'), ('2007', 'test'),]
 
     CAD_name = "_CAD" if args.is_CAD else ""
@@ -107,14 +107,14 @@ if __name__ == '__main__':
         json_data = {
             "dataset": data,
             "meta_data": {
-                "dirname": f"datasets/VOC{year}",
+                "dirname": f"datasets/WiderPerson{year}",
                 "evaluator_type": "coco",
-                "name": f"voc_{year}_trainval{CAD_name}_coco_style",
+                "name": f"wider_person_{year}_trainval{CAD_name}_coco_style",
                 "split": image_set,
                 "year": int(year),
             }}
 
-        dst_file = f'./datasets/voc_objects_{year}_{image_set}{CAD_name}_coco_style.json'
-        print(f"Saving the coco-style voc data at {dst_file}")
+        dst_file = f'./datasets/wider_person_objects_{year}_{image_set}{CAD_name}_coco_style.json'
+        print(f"Saving the coco-style wider_person data at {dst_file}")
         with open(dst_file, 'w') as outfile:
             json.dump(json_data, outfile)

@@ -108,7 +108,7 @@ if __name__ == "__main__":
             pred = np.asarray(predictions[im_name])
         elif args.type_pred == "detectron":
             name_ind = im_name
-            if "VOC" in args.dataset:
+            if "WiderPerson" in args.dataset:
                 name_ind = im_name[:-4]
 
             pred_ids = [
